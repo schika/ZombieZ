@@ -14,7 +14,7 @@ package com.darkshade.games.zombiez.enities {
 		private var vspeed : Number = 0;
 		private var hspeed : Number = 0;
 		private var dir : Number = 1;
-		private var hp : Number = 100;
+		private var hp : Number = 10;
 
 		public function Zombie(x : Number = 0, y : Number = 0) {
 			super(x, y);
@@ -37,6 +37,11 @@ package com.darkshade.games.zombiez.enities {
 			} else {
 				vspeed += 0.3;
 			}
+			if (collide("bullet", x, y)) {
+				hp -= (collide("bullet", x, y) as Bullet).damage;
+				FP.world.remove(collide("bullet", x, y));
+			}
+			if (hp < 0) FP.world.remove(this);
 			hspeed *= 0.95;
 			vspeed *= 0.99;
 			(graphic as Image).scaleX = dir;

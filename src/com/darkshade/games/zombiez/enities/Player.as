@@ -53,6 +53,9 @@ package com.darkshade.games.zombiez.enities {
 			if (Math.abs(hspeed) < 1 && !pressed) {
 				hspeed = 0;
 			}
+			if (Input.pressed(Key.SPACE)) {
+				FP.world.add(new Bullet(x, y, dir));
+			}
 			hspeed *= 0.95;
 			vspeed *= 0.99;
 			if (x < 0) x = 0;

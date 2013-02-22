@@ -11,7 +11,7 @@ package com.darkshade.games.zombiez {
 			super(320, 240, 60);
 			
 			FP.screen.scale = 2;
-//			FP.console.enable();
+			FP.console.enable();
 			FP.world = new PlayState();
 		}
 	}
