@@ -41,7 +41,7 @@ package com.darkshade.games.zombiez.enities {
 				hp -= (collide("bullet", x, y) as Bullet).damage;
 				FP.world.remove(collide("bullet", x, y));
 			}
-			if (hp < 0) FP.world.remove(this);
+			if (hp <= 0) FP.world.remove(this);
 			hspeed *= 0.95;
 			vspeed *= 0.99;
 			(graphic as Image).scaleX = dir;

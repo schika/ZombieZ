@@ -30,7 +30,7 @@ package com.darkshade.games.zombiez.states {
 			
 			spawnTimer = new Timer(3600, 0);
 			spawnTimer.addEventListener(TimerEvent.TIMER, spawn);
-			//spawnTimer.start();
+			spawnTimer.start();
 		}
 		
 		public function spawn(e:TimerEvent) : void {
