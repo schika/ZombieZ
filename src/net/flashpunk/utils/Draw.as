@@ -1,5 +1,6 @@
 ﻿package net.flashpunk.utils 
 {
+	import flash.display.JointStyle;
 	import flash.display.BitmapData;
 	import flash.display.Graphics;
 	import flash.display.LineScaleMode;
@@ -188,6 +189,26 @@
 			_graphics.clear();
 			_graphics.beginFill(color, alpha);
 			_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
+			_target.draw(FP.sprite, null, null, blend);
+		}
+		
+		public static function rectPlus(x:Number, y:Number, width:Number, height:Number, color:uint = 0xFFFFFF, alpha:Number = 1, fill:Boolean = true, thick:Number = 1, radius:Number = 0):void
+		{
+			if (color > 0xFFFFFF) color = 0xFFFFFF & color;
+			_graphics.clear();
+
+			if (fill) {
+				_graphics.beginFill(color, alpha);
+			} else {
+				_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+			}
+
+			if (radius <= 0) {
+				_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
+			} else {
+				_graphics.drawRoundRect(x - _camera.x, y - _camera.y, width, height, radius);
+			}
+
 			_target.draw(FP.sprite, null, null, blend);
 		}
 		

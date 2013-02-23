@@ -10,14 +10,11 @@ package com.darkshade.games.zombiez.enities {
 	/**
 	 * @author DarkShade
 	 */
-	public class Zombie extends Entity {
-		private var vspeed : Number = 0;
-		private var hspeed : Number = 0;
-		private var dir : Number = 1;
+	public class Zombie extends Enemy {
 		private var hp : Number = 10;
 
 		public function Zombie(x : Number = 0, y : Number = 0) {
-			super(x, y);
+			super(x, y, 2);
 			var image : Image = new Image(Assets.zombieIMG);
 			image.originX = 4;
 			graphic = image;
@@ -29,7 +26,7 @@ package com.darkshade.games.zombiez.enities {
 			super.update();
 
 			dir = (FP.world as PlayState).getPlayer().x >= x ? 1 : -1;
-			hspeed = dir / 10;
+			hspeed = dir * 1;
 			if ((FP.world as PlayState).getPlayer().x == x) hspeed = 0;
 			if (collide("block", x, y + 1)) {
 				vspeed = 0;
