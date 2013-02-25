@@ -11,5 +11,7 @@ package com.darkshade.games.zombiez.utils {
 		public static var zombieIMG : Class;
 		[Embed(source="../assets/images/pistol.png")]
 		public static var pistolIMG : Class;
+		[Embed(source="../assets/images/hpkit.png")]
+		public static var hpkitIMG : Class;
 	}
 }

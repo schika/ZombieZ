@@ -21,15 +21,18 @@ package com.darkshade.games.zombiez.enities {
 		private var gravity : Number = 0.3;
 		private var dir : Number = 1;
 		private var weapon : Weapon = Weapon.pistol;
-		private var hp : Number = 10;
-		private var maxhp : Number = 10;
+		public var maxhp : Number = 20;
+		public var hp : Number = 20;
+		public var exp : Number = 0;
+		public var money : Number = 100;
+		public var ammo : Number = 100;
 
 		public function Player(x : Number = 0, y : Number = 0) {
 			super(x, y);
 
 			graphic = new Image(Assets.playerIMG);
 			(graphic as Image).originX = 4;
-			setHitbox(8, 8);
+			setHitbox(8, 8, 4);
 		}
 
 		override public function update() : void {
@@ -60,9 +63,15 @@ package com.darkshade.games.zombiez.enities {
 			var e : Enemy = (collide("enemy", x, y) as Enemy);
 			if (e) {
 				hp -= e.damage;
-				e.x += -e.dir * 4;
-				x += e.dir * 4;
+				if (!e.collide("block", e.x + (-e.dir * 4), e.y)) e.x += -e.dir * 4;
+				if (!collide("block", x + (e.dir * 4), y)) x += e.dir * 4;
 			}
+			var i : Item = (collide("item", x, y) as Item);
+			if (i) {
+				i.effect(this);
+				FP.world.remove(i);
+			}
+			if (hp < 0) hp = 0;
 			
 			hspeed *= 0.95;
 			vspeed *= 0.99;
@@ -106,9 +115,13 @@ package com.darkshade.games.zombiez.enities {
 			var weaponImg : Image = weapon.getImage();
 			weaponImg.scaleX = dir;
 			Draw.graphic(weaponImg, x + (dir * 7), y);
-			
-			Draw.rect(16, 16, 32 / maxhp * hp, 4, 0xf84040);
+			//Healthbar
+			Draw.rect(16, 16, 32 / maxhp * hp, 4, 0xff4040);
 			Draw.rectPlus(16, 16, 32, 4, 0x000000, 1, false);
+			//Ammo status
+			Draw.text("Ammo: " + ammo, 16, 24, {size: 8});
+			//Exp status
+			Draw.text("Exp: " + exp, 16, 32, {size: 8});
 		}
 	}
 }

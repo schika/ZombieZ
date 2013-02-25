@@ -18,6 +18,10 @@ package com.darkshade.games.zombiez {
 			for (var i : int = 0; i < 40; i++) {
 				tilemap.setTile(i, 29);
 				grid.setTile(i, 29);
+				// if (FP.rand(100) < 50) {
+				// tilemap.setTile(i, 28);
+				// grid.setTile(i, 28);
+				// }
 			}
 		}
 	}

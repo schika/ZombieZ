@@ -20,11 +20,10 @@ package com.darkshade.games.zombiez.enities {
 
 			var image : Image = new Image(new BitmapData(1, 1, false, 0xffffff));
 			image.originX = dir == -1 ? 0 : 7;
-			image.originY = 3;
 			image.scaleX = dir;
 			graphic = image;
 
-			setHitbox(1, 1);
+			setHitbox(1, 1, 3);
 			type = "bullet";
 		}
 

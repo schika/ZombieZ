@@ -1,30 +1,30 @@
 package com.darkshade.games.zombiez.enities {
-	import com.darkshade.games.zombiez.states.PlayState;
-
 	import net.flashpunk.FP;
-	import net.flashpunk.Entity;
 	import net.flashpunk.graphics.Image;
 
+	import com.darkshade.games.zombiez.states.PlayState;
 	import com.darkshade.games.zombiez.utils.Assets;
+	import com.darkshade.games.zombiez.utils.Effect;
 
 	/**
 	 * @author DarkShade
 	 */
 	public class Zombie extends Enemy {
 		private var hp : Number = 10;
+		private var takenDamage : Boolean = false;
 
 		public function Zombie(x : Number = 0, y : Number = 0) {
-			super(x, y, 2);
+			super(x, y, 1);
 			var image : Image = new Image(Assets.zombieIMG);
 			image.originX = 4;
 			graphic = image;
-			setHitbox(8, 8);
+			setHitbox(8, 8, 4);
 			type = "enemy";
 		}
 
 		override public function update() : void {
 			super.update();
-
+			if (takenDamage) takenDamage = false;
 			dir = (FP.world as PlayState).getPlayer().x >= x ? 1 : -1;
 			hspeed = dir * 1;
 			if ((FP.world as PlayState).getPlayer().x == x) hspeed = 0;
@@ -34,9 +34,13 @@ package com.darkshade.games.zombiez.enities {
 			} else {
 				vspeed += 0.3;
 			}
-			if (collide("bullet", x, y)) {
-				hp -= (collide("bullet", x, y) as Bullet).damage;
-				FP.world.remove(collide("bullet", x, y));
+			var b : Bullet = collide("bullet", x, y) as Bullet;
+			if (b) {
+				hp -= b.damage;
+				FP.world.remove(b);
+				if (!collide("block", x - dir * 4, y)) x -= dir * 4;
+				takenDamage = true;
+				FP.world.add(new Effect(x + 4, y + 4, 0xff0000, 25));
 			}
 			if (hp <= 0) FP.world.remove(this);
 			hspeed *= 0.95;
@@ -44,6 +48,16 @@ package com.darkshade.games.zombiez.enities {
 			(graphic as Image).scaleX = dir;
 			adjustXPosition();
 			adjustYPosition();
+		}
+		
+		
+		override public function render() : void {
+			super.render();
+			if (takenDamage) {
+				(graphic as Image).color = 0xff0000;
+			} else {
+				(graphic as Image).color = 0xffffff;				
+			}
 		}
 
 		private function adjustXPosition() : void {
