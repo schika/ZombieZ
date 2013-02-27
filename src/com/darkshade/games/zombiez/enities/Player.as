@@ -20,12 +20,15 @@ package com.darkshade.games.zombiez.enities {
 		private var hspeed : Number = 0.0;
 		private var gravity : Number = 0.3;
 		private var dir : Number = 1;
-		private var weapon : Weapon = Weapon.pistol;
+		
+		public var weapons : Vector.<Weapon> = new Vector.<Weapon>();
+		public var currentWeapon : int = 0;
 		public var maxhp : Number = 20;
 		public var hp : Number = 20;
 		public var exp : Number = 0;
-		public var money : Number = 100;
-		public var ammo : Number = 100;
+		public var maxExp : Number = 100;
+		public var level : Number = 1;
+		public var money : Number = 100000;
 
 		public function Player(x : Number = 0, y : Number = 0) {
 			super(x, y);
@@ -33,6 +36,9 @@ package com.darkshade.games.zombiez.enities {
 			graphic = new Image(Assets.playerIMG);
 			(graphic as Image).originX = 4;
 			setHitbox(8, 8, 4);
+			
+			weapons.push(Weapon.pistol);
+			weapons[currentWeapon].buyed = true;
 		}
 
 		override public function update() : void {
@@ -50,16 +56,21 @@ package com.darkshade.games.zombiez.enities {
 			}
 			if (collide("block", x, y + 1)) {
 				vspeed = 0;
-				if (Input.pressed(Key.W)) vspeed -= 3;
+				if (Input.check(Key.W)) vspeed -= 3;
 			} else {
 				vspeed += gravity;
 			}
 			if (Math.abs(hspeed) < 1 && !pressed) {
 				hspeed = 0;
 			}
-			if (Input.pressed(Key.SPACE)) {
-				FP.world.add(new Bullet(x, y, dir, weapon.getDamage()));
+			if (Input.pressed(Key.SPACE) && weapons[currentWeapon].ammo > 0) {
+				FP.world.add(new Bullet(x, y, dir, weapons[currentWeapon].getDamage()));
+				weapons[currentWeapon].ammo--;
 			}
+			if (Input.pressed(Key.NUMPAD_8)) currentWeapon--;
+			if (Input.pressed(Key.NUMPAD_2)) currentWeapon++;
+			if (currentWeapon < 0) currentWeapon = weapons.length - 1;
+			if (currentWeapon >= weapons.length) currentWeapon = 0;
 			var e : Enemy = (collide("enemy", x, y) as Enemy);
 			if (e) {
 				hp -= e.damage;
@@ -72,6 +83,10 @@ package com.darkshade.games.zombiez.enities {
 				FP.world.remove(i);
 			}
 			if (hp < 0) hp = 0;
+			if (exp >= maxExp) {
+				level++;
+				maxExp = (int(maxExp * 1.4) + 10);
+			}
 			
 			hspeed *= 0.95;
 			vspeed *= 0.99;
@@ -112,16 +127,27 @@ package com.darkshade.games.zombiez.enities {
 
 		override public function render() : void {
 			super.render();
-			var weaponImg : Image = weapon.getImage();
+			var weaponImg : Image = weapons[currentWeapon].getImage();
 			weaponImg.scaleX = dir;
 			Draw.graphic(weaponImg, x + (dir * 7), y);
 			//Healthbar
-			Draw.rect(16, 16, 32 / maxhp * hp, 4, 0xff4040);
-			Draw.rectPlus(16, 16, 32, 4, 0x000000, 1, false);
-			//Ammo status
-			Draw.text("Ammo: " + ammo, 16, 24, {size: 8});
+			drawHealthbar(16, 16, hp, maxhp);
+			//Level status
+			Draw.text("Level: " + level, 120, 16, {size: 8});
 			//Exp status
-			Draw.text("Exp: " + exp, 16, 32, {size: 8});
+			Draw.text("Exp: " + exp + "/" + maxExp, 120, 24, {size: 8});
+			//Money Status
+			Draw.text("Money: " + money + "$", 200, 16, {size: 8});
+			//Ammo status
+			Draw.text("Ammo: " + weapons[currentWeapon].ammo, 200, 24, {size: 8});
+		}
+		
+		private function drawHealthbar(dx : Number, dy : Number, value : Number, maxvalue : Number) : void {
+			for (var i : int = 0; i < maxvalue / 2; i++) {
+				if (value / 2 > i) Draw.graphic(new Image(Assets.heartIMG), dx + i * 8, dy + 2);
+				if (value / 2 <= i) Draw.graphic(new Image(Assets.heartdisIMG), dx + i * 8, dy + 2);
+				if (value == i * 2 + 1) Draw.graphic(new Image(Assets.heartmidIMG), dx + i * 8, dy + 2);
+			}
 		}
 	}
 }

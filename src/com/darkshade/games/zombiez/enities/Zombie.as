@@ -14,7 +14,7 @@ package com.darkshade.games.zombiez.enities {
 		private var takenDamage : Boolean = false;
 
 		public function Zombie(x : Number = 0, y : Number = 0) {
-			super(x, y, 1);
+			super(x, y, 1, 10, 10);
 			var image : Image = new Image(Assets.zombieIMG);
 			image.originX = 4;
 			graphic = image;
@@ -40,7 +40,7 @@ package com.darkshade.games.zombiez.enities {
 				FP.world.remove(b);
 				if (!collide("block", x - dir * 4, y)) x -= dir * 4;
 				takenDamage = true;
-				FP.world.add(new Effect(x + 4, y + 4, 0xff0000, 25));
+				FP.world.add(new Effect(x + (dir * 8), y + 4, 0xff0000, 25));
 			}
 			if (hp <= 0) FP.world.remove(this);
 			hspeed *= 0.95;
